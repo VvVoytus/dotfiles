@@ -286,14 +286,16 @@ return {
 		},
 		marksman = {},
 		omnisharp = {},
+		postgres_lsp = {},
 		pyright = {},
 		r_language_server = {},
 		ruff = {},
 		rust_analyzer = {},
-		sqlls = {},
+		sqls = {},
 		systemd_lsp = {},
 		templ = {},
 		texlab = {},
+		tombi = {},
 		ts_ls = {},
 		yamlls = {},
 		zls = {},
@@ -315,6 +317,8 @@ return {
 		lua = { "stylua" },
 		markdown = { "prettierd" },
 		python = { "black" },
+		r = { "air" },
+		sql = { "sqlfluff" },
 		tex = { "latexindent" },
 		typescript = { "prettierd" },
 		typescriptreact = { "prettierd" },
@@ -325,6 +329,7 @@ return {
 	-- installed linters by language
 	linters = {
 		gitcommit = { "commitlint" },
+		sql = { "sqlfluff" },
 	},
 
 	-- installed debuggers
