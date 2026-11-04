@@ -1,5 +1,4 @@
 local colors = require("themes/catppuccin-mocha")
-local smw = hl.plugin.split_monitor_workspaces
 
 ------------------
 ---- MONITORS ----
@@ -50,7 +49,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd(uwsm_launch_app(music_player), { workspace = "5 silent" })
 	hl.exec_cmd(uwsm_launch_app(mail_client), { workspace = "6 silent" })
 	hl.dsp.focus({ workspace = 1 })
-	hl.exec_cmd("hyprpm reload -f -n")
+	hl.exec_cmd("hyprpm reload -f")
 end)
 
 hl.on("config.reloaded", function()
@@ -223,16 +222,7 @@ hl.config({
 -----------------
 
 hl.config({
-	plugin = {
-		split_monitor_workspaces = {
-			count = 6,
-			keep_focused = 1,
-			enable_notifications = 0,
-			enable_persistent_workspaces = 0,
-			enable_wrapping = 1,
-			link_monitors = 0,
-		},
-	},
+	plugin = {},
 })
 
 ---------------------
@@ -251,10 +241,6 @@ hl.bind(main_mod("S"), hl.dsp.exec_cmd(uwsm_launch_app(menu_app)))
 
 hl.bind(main_mod("Q"), hl.dsp.window.close())
 hl.bind(main_mod("W"), hl.dsp.exec_cmd("killall -SIGUSR1 waybar"))
-hl.bind(
-	main_mod("SHIFT + Q"),
-	hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'")
-)
 
 hl.bind(main_mod("V"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(main_mod("P"), hl.dsp.window.pseudo())
@@ -267,24 +253,32 @@ hl.bind(main_mod("up"), hl.dsp.focus({ direction = "up" }))
 hl.bind(main_mod("down"), hl.dsp.focus({ direction = "down" }))
 
 -- Scroll through workspaces with main_mod + SHIFT + left/right
-hl.bind(main_mod("SHIFT + left"), function()
-	smw.workspace("-1")
-end)
-hl.bind(main_mod("SHIFT + right"), function()
-	smw.workspace("+1")
-end)
+hl.bind(main_mod("SHIFT + left"), hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(main_mod("SHIFT + right"), hl.dsp.focus({ workspace = "e+1" }))
 
 -- Switch workspaces with main_mod [0-9]
 -- Move active window to a workspace with main_mod SHIFT [0-9]
 for i = 1, 10 do
 	local key = i % 10 -- 10 maps to key 0
-	hl.bind(main_mod(key), function()
-		return smw.workspace(i)
-	end)
-	hl.bind(main_mod("SHIFT + " .. key), function()
-		return smw.move_to_workspace_silent(i)
-	end)
+	hl.bind(main_mod(key), hl.dsp.focus({ workspace = tostring(i) }))
+	hl.bind(main_mod("SHIFT + " .. key), hl.dsp.window.move({ workspace = tostring(i) }))
 end
+
+-- Move current workspace to a monitor with main_mod + CTRL + [1-2]
+hl.bind(main_mod("CTRL + 1"), hl.dsp.workspace.move({ monitor = "eDP-1" }))
+hl.bind(main_mod("CTRL + 2"), hl.dsp.workspace.move({ monitor = "HDMI-A-1" }))
+
+-- Swap monitors with main_mod + CTRL + SHIFT + [1-2]
+hl.bind(main_mod("CTRL + SHIFT + 1"), function()
+	for i = 1, 10 do
+		hl.dispatch(hl.dsp.workspace.move({ monitor = "eDP-1", workspace = tostring(i) }))
+	end
+end)
+hl.bind(main_mod("CTRL + SHIFT + 2"), function()
+	for i = 1, 10 do
+		hl.dispatch(hl.dsp.workspace.move({ monitor = "HDMI-A-1", workspace = tostring(i) }))
+	end
+end)
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(main_mod("mouse:272"), hl.dsp.window.drag(), { mouse = true })
