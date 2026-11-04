@@ -1,5 +1,5 @@
 .zsh_sessions/
-.zplugins.zsh
+.zsh_plugins.zsh
 .zcompdump
 .zcompcache/
 lazy-lock.json

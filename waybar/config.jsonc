@@ -17,19 +17,18 @@
     "modules-right": [
         "keyboard-state",
         "idle_inhibitor",
-        "wireplumber",
+        "wireplumber#sink",
+        "wireplumber#source",
         "bluetooth",
         "network",
         "custom/vpn",
         "group/hardware",
         "group/bat",
-        "group/power-menu"
+        "custom/shutdown"
     ],
     // Modules configuration
     "hyprland/workspaces": {
-        "disable-scroll": true,
         "all-outputs": true,
-        "warp-on-scroll": false,
         "show-special": true,
         "format": "{icon}",
         "format-icons": {
@@ -43,7 +42,13 @@
             "urgent": "",
             "focused": "",
             "default": ""
-        }
+        },
+        "tooltip": true,
+        "tooltips": {
+            "default": "{windows}",
+            "empty": "" // Will result in no tooltip
+        },
+        "format-window-separator": "\n"
     },
     "mpd": {
         "format": " {artist} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) {stateIcon}",
@@ -69,15 +74,44 @@
         "tooltip-format": " {artist} - {album} - {title} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}",
         "on-click": "ymuse"
     },
-    "hyprland/window": {
-        "max-length": 30
+    "clock": {
+        "timezone": "Europe/Warsaw",
+        "format": "{:%a, %d %b %Y %H:%M (%Z)}",
+        "tooltip-format": "<tt><big>{calendar}</big></tt>",
+        "calendar": {
+            "iso8601": true,
+            "on-scroll": 1,
+            "on-click-right": "mode",
+            "mode-mon-col": 3,
+            "weeks-pos": "left",
+            "format": {
+                "months": "<span color='#f5c2e7'><b>{}</b></span>",
+                "days": "<span color='#cdd6f4'><b>{}</b></span>",
+                "weeks": "<span color='#f5e0dc'><b>W{}</b></span>",
+                "weekdays": "<span color='#f5e0dc'><b>{}</b></span>",
+                "today": "<span color='#f38ba8'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click": "shift_reset",
+            "on-click-right": "mode",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
     },
     "keyboard-state": {
         "capslock": true,
+        "numlock": true,
         "format": "{icon}",
         "format-icons": {
-            "locked": "󰘲",
-            "unlocked": ""
+            "capslock": {
+                "locked": "󰘲",
+                "unlocked": ""
+            },
+            "numlock": {
+                "locked": "󰎠",
+                "unlocked": ""
+            }
         }
     },
     "idle_inhibitor": {
@@ -89,7 +123,7 @@
             "deactivated": "󰌿"
         }
     },
-    "wireplumber": {
+    "wireplumber#sink": {
         "scroll-step": 1, // %, can be a float
         "reverse-scrolling": true,
         "format": "{icon}",
@@ -103,6 +137,16 @@
         "tooltip-format": "󰓃 {node_name} ({volume}%)",
         "on-click": "pwvucontrol"
     },
+    "wireplumber#source": {
+        "node-type": "Audio/Source",
+        "scroll-step": 1, // %, can be a float
+        "reverse-scrolling": true,
+        "format": "󰍬",
+        "format-muted": "󰍭",
+        "tooltip": true,
+        "tooltip-format": "󰍬 {node_name} ({volume}%)",
+        "on-click": "pwvucontrol"
+    },
     "bluetooth": {
         "format": "",
         "format-disabled": "󰂲",
@@ -110,8 +154,9 @@
         "format-on": "",
         "format-connected": "󰂱",
         "tooltip-format": " {controller_alias} via {controller_address}",
-        "tooltip-format-connected": " {controller_alias} via {controller_address}\n\n{num_connections} connected devices:{device_enumerate}",
-        "tooltip-format-enumerate-connected": "\n󰂱 {device_alias} ({device_address})",
+        "tooltip-format-connected": " {controller_alias} via {controller_address}\n\n{num_connections} connected devices:\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "󰂱 {device_alias}",
+        "tooltip-format-enumerate-connected-battery": "󰂱 {device_alias} ({device_battery_percentage}%)",
         "on-click": "blueman-manager"
     },
     "network": {
@@ -145,7 +190,8 @@
             "memory",
             "temperature",
             "disk",
-            "backlight"
+            "backlight",
+            "privacy"
         ]
     },
     "custom/stats": {
@@ -155,14 +201,16 @@
     },
     "cpu": {
         "format": " {usage}%",
-        "tooltip": false
+        "tooltip-format": "Usage: {usage}% Load: {load}\nFrequency: {avg_frequency}GHz ({min_frequency}-{max_frequency}GHz)"
     },
     "memory": {
-        "format": " {}%"
+        "format": " {percentage}%",
+        "tooltip-format": "Usage: {used:0.1f}GiB out of {total:0.1f}GiB ({percentage}%)\nSwap: {swapUsed:0.1f}GiB out of {swapTotal:0.1f}GiB ({swapPercentage}%)"
     },
     "temperature": {
+        // "hwmon-name": "amdgpu",
         // "thermal-zone": 2,
-        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        "hwmon-path": "/sys/class/hwmon/hwmon4/temp1_input",
         "critical-threshold": 80,
         "tooltip": false,
         "format": "{icon} {temperatureC}°C",
@@ -193,6 +241,30 @@
             "",
             ""
         ]
+    },
+    "privacy": {
+        "icon-spacing": 4,
+        "icon-size": 12,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true
+            },
+            {
+                "type": "audio-out",
+                "tooltip": true
+            },
+            {
+                "type": "audio-in",
+                "tooltip": true
+            },
+            {
+                "type": "location",
+                "icon-name": "location-services-active-symbolic"
+            }
+        ],
+        "ignore-monitor": true
     },
     "group/bat": {
         "orientation": "horizontal",
@@ -234,46 +306,10 @@
             "power-saver": ""
         }
     },
-    "clock": {
-        "timezone": "Europe/Warsaw",
-        "format": "{:%a, %d %b %Y %H:%M}",
-        "tooltip-format": "<tt><big>{calendar}</big></tt>"
-    },
-    "group/power-menu": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "transition-left-to-right": false
-        },
-        "modules": [
-            "custom/power",
-            "custom/lock",
-            "custom/hibernate",
-            "custom/reboot"
-        ]
-    },
-    "custom/lock": {
-        "format": "󰌾",
-        "tooltip": true,
-        "tooltip-format": "Lock the screen",
-        "on-click": "loginctl lock-session"
-    },
-    "custom/hibernate": {
-        "format": "󰒲",
-        "tooltip": true,
-        "tooltip-format": "Hibernate",
-        "on-click": "systemctl hibernate"
-    },
-    "custom/reboot": {
-        "format": "󰜉",
-        "tooltip": true,
-        "tooltip-format": "Reboot the system",
-        "on-click": "systemctl reboot"
-    },
-    "custom/power": {
+    "custom/shutdown": {
         "format": "⏻ ",
         "tooltip": true,
-        "tooltip-format": "Shutdown the system",
-        "on-click": "systemctl poweroff"
+        "tooltip-format": "Open the shutdown menu",
+        "on-click": "wleave"
     }
 }

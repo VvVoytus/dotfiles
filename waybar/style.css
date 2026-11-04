@@ -111,10 +111,8 @@ tooltip label {
 #power-profiles-daemon,
 #clock,
 #custom-vpn,
-#custom-power,
-#custom-lock,
-#custom-hibernate,
-#custom-reboot {
+#custom-shutdown,
+#privacy-item {
   background-color: transparent;
   padding: 0 0.5rem;
   color: @text;
@@ -139,7 +137,10 @@ tooltip label {
 }
 
 #keyboard-state > label.locked {
-  padding: 0 0.25rem;
+  padding: 0 0 0 0.25rem;
+}
+
+#keyboard-state > label.locked:first-child {
   margin-left: 0.5rem;
   margin-right: 0;
 }
@@ -162,6 +163,14 @@ tooltip label {
   padding: 0 0.25rem;
 }
 
+#privacy-item:first-child {
+  padding-left: 0.25rem;
+}
+
+#privacy-item:last-child {
+  padding-right: 0.25rem;
+}
+
 @keyframes blink {
   to {
     color: @red;
@@ -173,7 +182,8 @@ tooltip label {
 }
 
 /* Using steps() instead of linear as a timing function to limit cpu usage */
-#battery.critical:not(.charging) {
+#battery.critical:not(.charging),
+#temperature.critical {
   animation-name: blink;
   animation-duration: 0.5s;
   animation-timing-function: steps(12);
@@ -206,7 +216,7 @@ tooltip label {
   margin-right: 0.5rem;
 }
 
-#custom-power {
+#custom-shutdown {
   color: @red;
   padding-right: 0;
 }
@@ -216,6 +226,7 @@ tooltip label {
 #bluetooth:hover,
 #network:hover,
 #custom-vpn:hover,
-#custom-stats:hover {
+#custom-stats:hover,
+#privacy-item:hover {
   color: @rosewater;
 }
